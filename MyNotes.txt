@@ -1,0 +1,22 @@
+php artisan route:clear -- use to clear cache
+php artisan make:components 
+[Git Commands]
+git add .
+git commit -m "Msg"
+git push -u origin main
+INSERT INTO `users` (`name`, `email`, `address`) 
+VALUES ('tony', 'tony@test.com', 'New York'), ('stephen', 'stephen@test.com', 'kolkata');
+php artisan make:migration create_hotel_rest_table
+php artisan make:migration add_column_to_features_table
+php artisan make:controller Admin/Cms/GeneralController
+
+php artisan make:migration create_arrival_details_table
+php artisan make:migration create_arrival_properties_table
+php artisan make:migration create_arrival_price_table
+php artisan make:migration create_departure_details_table
+php artisan make:migration create_departure_properties_table
+php artisan make:migration create_departure_price_table
+php artisan make:migration create_lounge_table
+php artisan make:migration create_transfer_table
+php artisan make:migration create_mgregister_table
+php artisan make:migration create_apartment_table

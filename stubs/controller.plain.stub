@@ -1,0 +1,234 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ rootNamespace }}Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session ;
+use Illuminate\Support\Facades\DB;
+
+
+class {{ class }} extends Controller{
+//update views accordingly
+    protected $table = "hotel_rest";
+
+    //1. show all records
+    public function show(){
+        $table = "hotel_rest";
+       
+        if (Session::has('loginId')) {
+            $user_id = Session::get('loginId');
+            $user_data = DB::table('users')
+            ->where('id', $user_id)
+            ->get()
+            ->first();       
+        }
+        $all_data = DB::table($table)
+        //->select('hotel_rest.*','hotels.name')
+        //->join('hotels', 'hotel_rest.hotel_id', '=', 'hotels.id')
+        ->get();
+        //print_r($user_data);exit;
+        return view('admin.hotels.rest', [
+            'all_data' => $all_data, 
+            'user_data'=> $user_data
+            ]);
+
+    }
+
+    //2. create a record
+    public function create(Request $req){
+       
+        $table = "hotel_rest";
+        
+        // variable declaration
+        $create_rules = array(
+           // 'menu_file' =>  'mimes:pdf,doc,docx|required',
+            //'image' =>  'mimes:png,gif,jpeg,jpg|required',
+            'hotel_id' => 'required',
+            'description' => 'required',
+            'title' => 'required',
+            'open' => 'required',
+            'close' => 'required'
+            //'email' => 'email|required|unique:users',
+            //'password' => 'required',
+            //'password_confirmation' => 'required|required_with:password|same:password'
+        );
+
+        //file upload to public/docs/hotels/restaurants
+        date_default_timezone_set('Asia/Kolkata');
+        if ($req->hasfile('image')) {
+           
+      
+            $file2 = $req->file('image');
+            $filename2 = time().'-'.$file2->getClientOriginalName();
+            $destination2 = public_path('hotels/restaurants/img');
+            $file2->move($destination2, $filename2);
+            
+            $create_array = array (
+                'image' => $filename2,
+                'title' => $req->input('title'),
+                'open' => $req->input('open'),
+                'alcohol' => $req->input('alcohol'),
+                'liveband' => $req->input('liveband'),
+                'close' => $req->input('close'),
+                'hotel_id' => $req->input('hotel_id'),
+                'description' => $req->input('description'),
+                'created_at' => date('Y-m-d')
+            );
+        }else{
+            
+            $create_array = array (
+                'title' => $req->input('title'),
+                'open' => $req->input('open'),
+                'alcohol' => $req->input('alcohol'),
+                'liveband' => $req->input('liveband'),
+                'close' => $req->input('close'),
+                'hotel_id' => $req->input('hotel_id'),
+                'description' => $req->input('description'),
+                'created_at' => date('Y-m-d')
+            );
+            
+
+        }
+       // DB::table($table)->insert($create_array);
+       if (!empty($req->validate($create_rules))) {
+
+            $res = DB::table($table)->insert($create_array);
+         
+
+            if ($res) {
+                $req->session()->flash('reg_msg', 'You have successfully entered new record.');             
+            }else{
+                $req->session()->flash('reg_msg', 'Sorry creation of new record not completed.');
+            }
+            return redirect('rest-hotel');
+        
+        }
+       
+
+    }
+
+    //3. delete record
+    public function remove($id){
+        $table = "hotel_rest";
+        $data = (array) DB::table($table)
+            ->where('id', $id)
+            ->get()
+            ->first();
+
+        if($data){
+
+            $affected = DB::table($table)
+            ->where('id', $id)
+            ->delete();
+
+        if ($affected == 1) {
+                
+            session()->flash('succ_msg', 'Record deleted successfully!'); 
+            return redirect('login');
+        }else{
+            dd($affected);
+            }
+        
+    }
+
+
+
+    }
+
+    //4. edit a record
+    public function edit($id){
+
+        $data = (array) DB::table($table)
+                ->where('id', $id)
+                ->get()
+                ->first();
+
+         if ($data) {
+                
+                return view('admin.dashboard', compact('data'));
+           
+            }
+
+    }
+
+    
+
+    //5. update edited record
+    public function update(Request $req, $id){
+
+          // variable declaration
+        $update_rules = array(
+
+            'name' => 'required',
+            'email' => 'email|required|unique:users',
+            'password' => 'required',
+            'password_confirmation' => 'required|required_with:password|same:password'
+        );
+
+         $update_array = array (
+            'name' => $req->input('name'),
+            'email' => $req->input('email'),
+            'created_at' => date('Y-m-d')
+            );
+
+       
+        // function declaration
+         $validator = $req->validate($update_rules);
+
+        if (!empty($validator)) {
+
+            $affected = DB::table($table)
+              ->where('id', $id)
+              ->update($update_array);
+        }
+
+        if ($affected == 1) {
+            
+            $req->session()->flash('succ_msg', 'Password updated successfully! Please login with new password!'); 
+            return redirect('login');
+        }else{
+
+            dd($affected);
+        }
+
+
+    }
+
+
+    //6. update status of record
+    public function status(Request $req){
+
+        $user = User::find($request->user_id);
+        $user->status = $request->status;
+        $user->save();
+  
+        return response()->json(['success'=>'Status change successfully.']);
+
+    }
+
+    //7. Search details by unique id
+    public function search_by_id(Request $req){
+        
+        $id = $req->input('hotel_id');
+        $table = "hotels";
+        $data = DB::table($table)
+        ->where('id', $id)
+        ->get()
+        ->first();
+        return response()->json($data);
+        
+    }
+
+    //8. Autocomplete
+    public function autocomplete(Request $request)
+    {
+        $table = "flight_properties";
+        $data = DB::table($table)
+                ->where("flight_number","LIKE","%{$request->query}%")
+                ->get();
+   
+        return response()->json($data);
+    }
+
+}
