@@ -22,7 +22,8 @@
   <!-- /.login-logo -->
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
-      <a href="../../index2.html" class="h1"><b>Fire</b>Shade</a>
+      <img src="{{ url(config('constants.APP_LOGO')) }}" alt=""><b><br>
+        <h1>{{ config('constants.LOGO_TITLE') }}</h1>
     </div>
     <div class="card-body">
       <p class="login-box-msg">Provide Registered Email To Reset Password</p>

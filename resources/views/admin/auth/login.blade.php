@@ -23,7 +23,7 @@
   <div class="card card-outline card-primary">
     <div class="card-header text-center">
       <img src="{{ url(config('constants.APP_LOGO')) }}" alt=""><b><br>
-      <h1>LaraShade</h1>
+      <h1>{{ config('constants.LOGO_TITLE') }}</h1>
     </div>
     <div class="card-body">
       <p class="login-box-msg">Sign in to start your session</p>
