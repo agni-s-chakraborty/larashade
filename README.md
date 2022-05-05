@@ -38,9 +38,9 @@
 
 3. ### Migrate database or import sql (recommended for now) from larashade/sql/db.sql
 
-4. ### Create and configure .env file
+4. ### Create and configure .env file with new key ; before that do 'composer update'
 
-5. ### From terminal run 'PHP artisan serve'
+5. ### From terminal run 'PHP artisan serve' to run program 
 
 6. ### Go to http://localhost:8000/register
 
