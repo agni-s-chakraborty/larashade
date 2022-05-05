@@ -28,7 +28,7 @@
 
 7. ### Use of PHPMailer in mailing
 
-8. ### Roles & Permissions ('Upcoming') 
+8. ### Roles & Permissions (Upcoming) 
 
 # C. How to Use
 
@@ -36,7 +36,7 @@
 
 2. ### Extract in htdocs/www, then open with VsCode
 
-3. ### Migrate database or import sql from larashade/sql/db.sql
+3. ### Migrate database or import sql (recommended for now) from larashade/sql/db.sql
 
 4. ### Create and configure .env file
 
